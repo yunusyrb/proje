@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/about_logo"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+
+        android:layout_marginLeft="50dp"
+        android:foregroundGravity="center"
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/about_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-50dp"
+        android:gravity="center"
+        android:text="@string/ortak_v1_0"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/copright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/about_logo"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/copyright_c_2018_all_right_reserved"
+        android:layout_marginBottom="-80dp"
+        />
+
+    <TextView
+        android:id="@+id/gelistiriciler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/copright"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-30dp"
+        android:gravity="center"
+        android:text="@string/yunus_yarba_ay_eg_l_ah_n"
+        />
+
+    <TextView
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gelistiriciler"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="Geri Dön"
+        />
+
+</RelativeLayout>
