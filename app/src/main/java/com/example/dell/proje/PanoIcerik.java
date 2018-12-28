@@ -14,8 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,96 +26,65 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanoIcerik extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class PanoIcerik extends AppCompatActivity  {
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    Button davetgonder;
 
-        if (id == R.id.nav_camera) {
-            Toast.makeText(getApplicationContext(),"Profile Tıklandı.", Toast.LENGTH_LONG).show();
-        } else if (id == R.id.hakkimizda) {
-            Intent intent = new Intent(getApplicationContext(),Hakkinda.class);
-            startActivity(intent);
-            //overridePendingTransition(R.anim.right_in,R.anim.left_out);
-
-        } else if (id == R.id.nav_cikis) {
-            final AlertDialog.Builder builder=new AlertDialog.Builder(PanoIcerik.this);
-            builder.setMessage("Çıkış yapmak istediğinizden emin misiniz?");
-            builder.setCancelable(true);
-            builder.setNegativeButton("Evet", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                    //  mFirebaseAuth.signOut();
-
-                    Intent intent = new Intent(getApplicationContext(),GirisYap.class);
-                    startActivity(intent);
-                    //overridePendingTransition(R.anim.right_in,R.anim.left_out);
-
-                }
-            });
-
-            builder.setPositiveButton("Hayır", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //Hiçbir şey yapma
-                }
-            });
-            AlertDialog alertDialog=builder.create();
-            alertDialog.show();
-
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(getApplicationContext(),Ayarlar.class);
-            startActivity(intent);
-            // overridePendingTransition(R.anim.right_in,R.anim.left_out);
-
-        } else if (id == R.id.nav_share) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    ImageView ayar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pano_icerik);
         tanimla();
         tiklama();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+        switch (menuItem.getItemId()){
+            case R.id.profil:
+                startActivity(new Intent(this,Ayarlar.class));
+                break;
+            case R.id.bildirim:
+                startActivity(new Intent(this,Ayarlar.class));
+                break;
+            case R.id.hakkimizda:
+                startActivity(new Intent(this,Hakkinda.class));
+                break;
+            case R.id.cikis:
+                cikisYap();
+                break;
+        }
+        return true;
+    }
+
+    public void cikisYap(){
+        Intent intent=new Intent(this,GirisYap.class);
+        startActivity(intent);
+        PanoIcerik.this.finish();
     }
 
     public void tanimla() {
-        ayar =findViewById(R.id.ayarlar);
+        davetgonder = findViewById(R.id.davetgonder);
     }
-    public void gecisYap(){
-        Intent intent=new Intent(this,Ayarlar.class);
-        startActivity(intent);
-    }
-    public void tiklama(){
-        ayar.setOnClickListener(new View.OnClickListener() {
+    public void tiklama() {
+        davetgonder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gecisYap();
+                startActivity(new Intent(PanoIcerik.this,Davet.class));
             }
         });
     }
-    String url = "http://192.168.1.4/wbservis/service/yetkiekle";
+
+
+    String url = "http://192.168.1.5/wbservis/service/yetkiekle";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;

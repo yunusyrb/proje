@@ -5,9 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class Hakkinda extends AppCompatActivity {
-    Button btn;
+    TextView btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +18,7 @@ public class Hakkinda extends AppCompatActivity {
     }
 
     public void tanimla(){
-        btn= findViewById(R.id.girisbuton);
+        btn= findViewById(R.id.back_button);
     }
     public void gecisYap(){
         Intent intent=new Intent(this,PanoOlustur.class);

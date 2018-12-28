@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,13 @@ public class GirisYap extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.giris_yap);
+        sharedPreferences = getApplicationContext().getSharedPreferences("giris",0);
+        if(sharedPreferences.getString("id", null) != null)
+        {
+            Intent intent=new Intent(this,PanoOlustur.class);
+            startActivity(intent);
+
+        }
         tanimla();
         tiklama();
     }
@@ -59,10 +68,6 @@ public class GirisYap extends AppCompatActivity {
                 mail = email.getText().toString();
                Sifre = sifre.getText().toString();
 
-                /*Calendar c = Calendar.getInstance();
-                SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
-                tarih = format.format(c.getTime());*/
-
                 if(mail.matches("")){
                     hata_mesaji += "Üye No yada E-Mail Alanı Boş Olamaz\n";
                     hata = true;
@@ -72,7 +77,7 @@ public class GirisYap extends AppCompatActivity {
                     hata=true;
                 }*/
 
-                int sifre_karakter = sifre.length();
+                int sifre_karakter = Sifre.length();
                 if(sifre_karakter<6 || sifre_karakter==0){
                     hata_mesaji += "Şifre 6 Karakterden Az Olamaz\n";
                     hata=true;
@@ -105,7 +110,7 @@ public class GirisYap extends AppCompatActivity {
             }
         });
     }
-    String url = "http://192.168.1.4/wbservis/service/giris";
+    String url = "http://192.168.1.5/wbservis/service/giris";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
@@ -133,8 +138,8 @@ public class GirisYap extends AppCompatActivity {
             //Bu değişkenler bu uygulamada hiçbir işe yaramıyor.Sadece göstermek amaçlı
             // params.add(new BasicNameValuePair("panoID", "3"));
             //params.add(new BasicNameValuePair("kullaniciID", "3"));
-            params.add(new BasicNameValuePair("email", email.getText().toString()));
-            params.add(new BasicNameValuePair("sifre", sifre.getText().toString()));
+            params.add(new BasicNameValuePair("email", mail));
+            params.add(new BasicNameValuePair("sifre", Sifre));
 
 
             veri_string = post.httpPost(url,"POST",params,20000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
@@ -154,7 +159,10 @@ public class GirisYap extends AppCompatActivity {
                 int realId;
                 realId = Integer.parseInt(id);
                 if(realId >= 0){
-                    //session'a atılmalı
+                    sharedPreferences = getApplicationContext().getSharedPreferences("giris",0);
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("id",id);
+                    editor.commit();
                     gecisYap();
                 }
             } catch (JSONException e) {

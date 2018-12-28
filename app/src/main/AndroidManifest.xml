@@ -26,20 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.dell.proje.PanoOlustur"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name="com.example.dell.proje.PanoOlustur"  />
         <activity
-            android:name="com.example.dell.proje.PanoIcerik"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name="com.example.dell.proje.PanoIcerik" />
         <activity android:name="com.example.dell.proje.Hakkinda" />
         <activity android:name="com.example.dell.proje.Ayarlar" />
-        <activity
-            android:name="com.example.dell.proje.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.example.dell.proje.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+
+        <activity android:name="com.example.dell.proje.Davet" />
     </application>
 
 </manifest>
