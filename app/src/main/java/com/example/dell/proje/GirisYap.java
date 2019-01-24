@@ -2,6 +2,7 @@ package com.example.dell.proje;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,25 +25,32 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class GirisYap extends AppCompatActivity {
     Button btn;
     EditText email,sifre;
     TextView kayıtolbuton;
-    SharedPreferences sharedPreferences;
+    private String SHARED_EMPTY="empty";
+    static  SharedPreferences sharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.giris_yap);
-        sharedPreferences = getApplicationContext().getSharedPreferences("giris",0);
-        if(sharedPreferences.getString("id", null) != null)
-        {
-            Intent intent=new Intent(this,PanoOlustur.class);
-            startActivity(intent);
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        Boolean sessionControl = sharedPref.getBoolean("isSession",false);
+
+        if (sessionControl){
+
+            mail = sharedPref.getString("email","batman");
+            Sifre= sharedPref.getString("sifre","batman");
+            new Post().execute();
 
         }
-        tanimla();
-        tiklama();
+        else{
+
+            setContentView(R.layout.giris_yap);
+            tanimla();
+            tiklama();
+        }
     }
 
     public void tanimla(){
@@ -52,7 +61,7 @@ public class GirisYap extends AppCompatActivity {
     }
     public void gecisYap(){
 
-        Intent intent=new Intent(this,PanoOlustur.class);
+        Intent intent=new Intent(this,pano_adi_olustur.class);
         startActivity(intent);
     }
     public void gecisYap2(){
@@ -64,10 +73,11 @@ public class GirisYap extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //gecisYap();
-
-                mail = email.getText().toString();
-               Sifre = sifre.getText().toString();
-
+                if (mail==null&&Sifre==null)
+                {
+                    mail = email.getText().toString();
+                    Sifre = sifre.getText().toString();
+                }
                 if(mail.matches("")){
                     hata_mesaji += "Üye No yada E-Mail Alanı Boş Olamaz\n";
                     hata = true;
@@ -90,7 +100,7 @@ public class GirisYap extends AppCompatActivity {
                     alertDialog.setCancelable(false);
                     alertDialog.setButton(RESULT_OK,"Tamam", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                           sifre.setText("");
+                            sifre.setText("");
                             hata_mesaji = "";
                             hata = false;
                         }
@@ -110,7 +120,7 @@ public class GirisYap extends AppCompatActivity {
             }
         });
     }
-    String url = "http://192.168.1.5/wbservis/service/giris";
+    private final String url = Config.URL+"giris";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
@@ -142,7 +152,7 @@ public class GirisYap extends AppCompatActivity {
             params.add(new BasicNameValuePair("sifre", Sifre));
 
 
-            veri_string = post.httpPost(url,"POST",params,20000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
+            veri_string = post.httpPost(url,"POST",params,50000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
 
             Log.d("HTTP POST CEVAP:",""+veri_string);// gelen veriyi log tuttuk
 
@@ -156,16 +166,23 @@ public class GirisYap extends AppCompatActivity {
             try {
                 JSONObject jsonObje = new JSONObject(in);
                 String id  = jsonObje.getString("id");
+                String adsoyad  = jsonObje.getString("adsoyad");
+                int panoId = jsonObje.getInt("panoID");
                 int realId;
                 realId = Integer.parseInt(id);
                 if(realId >= 0){
-                    sharedPreferences = getApplicationContext().getSharedPreferences("giris",0);
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
-                    editor.putString("id",id);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("email",mail);
+                    editor.putString("sifre",Sifre);
+                    editor.putBoolean("isSession",true);
+                    editor.putInt("kullanici_id",realId);
+                    editor.putString("ad",adsoyad);
+                     editor.putInt("panoId",panoId);
                     editor.commit();
                     gecisYap();
                 }
             } catch (JSONException e) {
+                System.out.println("Giriş Hatası "+e.getMessage());
                 Toast.makeText(getApplicationContext(), "Kullanıcı bulunamadı", Toast.LENGTH_LONG).show();
 
                 e.printStackTrace();

@@ -65,7 +65,7 @@ public class KayitOl extends AppCompatActivity implements View.OnClickListener{
             }
         });
     }
-    String url = "http://192.168.1.4/wbservis/service/kayit";
+    String url = Config.URL+"kayit";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
