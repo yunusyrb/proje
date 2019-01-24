@@ -47,9 +47,23 @@ public class PanoOlustur extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pano_olustur);
+
         cnt = this;
         a = 0;
+        Boolean tableControl = GirisYap.sharedPref.getBoolean("tabloEklendi",false);
+       /* if (tableControl)
+        {
+            Intent intent = new Intent(this,PanoIcerik.class);
+            startActivity(intent);
+        }
+        else
+        {
+            setContentView(R.layout.pano_olustur);
+            tanimla();
+            tiklama();
+        }
+*/
+        setContentView(R.layout.pano_olustur);
         tanimla();
         tiklama();
     }
@@ -72,7 +86,12 @@ public class PanoOlustur extends AppCompatActivity  {
                 startActivity(new Intent(this,Hakkinda.class));
                 break;
             case R.id.cikis:
-
+                SharedPreferences.Editor editor = GirisYap.sharedPref.edit();
+                editor.putBoolean("isSession",false);
+                editor.putBoolean("tabloEklendi",false);
+                editor.putString("email","");
+                editor.putString("sifre","");
+                editor.commit();
                 Intent intent=new Intent(this,GirisYap.class);
                 startActivity(intent);
 
@@ -95,7 +114,9 @@ public class PanoOlustur extends AppCompatActivity  {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SharedPreferences.Editor editor = GirisYap.sharedPref.edit();
+                editor.putBoolean("tabloEklendi",true);
+                editor.commit();
                 gecisYap();
             }
         });
@@ -114,18 +135,18 @@ public class PanoOlustur extends AppCompatActivity  {
                 giderTutarText = findViewById(R.id.gidertutar);
                 gideradi = giderAdiText.getText().toString();
                 gidertutar = giderTutarText.getText().toString();
-                url = "http://192.168.1.5/wbservis/service/giderekle";
+                url = Config.URL+ "giderekle";
                 eklemeMi = true;
                 new Post().execute();
             }
         });
     }
 
-    String url = "http://192.168.1.5/wbservis/service/giderekle";
+    String url = Config.URL+"giderekle";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
-    Boolean eklemeMi = true;
+        Boolean eklemeMi = true;
     List postparams = new ArrayList(); //Post edilecek değişkenleri ayarliyoruz.
 
     class Post extends AsyncTask<Void, Void, Void> {
@@ -145,6 +166,7 @@ public class PanoOlustur extends AppCompatActivity  {
                 postparams.clear();
                 postparams.add(new BasicNameValuePair("gideradi", gideradi));
                 postparams.add(new BasicNameValuePair("gidertutar", gidertutar));
+                postparams.add(new BasicNameValuePair("giderpano",String.valueOf( GirisYap.sharedPref.getInt("panoID",0))));
                 postparams.add(new BasicNameValuePair("gideradmin", "10"));
                 postparams.add(new BasicNameValuePair("uniq", ""+a));
             }else{

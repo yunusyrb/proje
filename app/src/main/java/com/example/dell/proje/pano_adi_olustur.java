@@ -1,31 +1,21 @@
 package com.example.dell.proje;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,20 +23,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanoIcerik extends AppCompatActivity  {
-
-    Button davetgonder;
-
+public class pano_adi_olustur extends AppCompatActivity {
+    Button panoadibtn;
+    EditText panoadi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pano_icerik);
+        setContentView(R.layout.activity_pano_adi_olustur);
         tanimla();
         tiklama();
-        new Post().execute();
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main,menu);
@@ -72,75 +58,86 @@ public class PanoIcerik extends AppCompatActivity  {
                 editor.putString("email","");
                 editor.putString("sifre","");
                 editor.commit();
-                cikisYap();
+                Intent intent=new Intent(this,GirisYap.class);
+                startActivity(intent);
+
                 break;
         }
         return true;
     }
 
-    public void cikisYap(){
-        Intent intent=new Intent(this,GirisYap.class);
-        startActivity(intent);
-        PanoIcerik.this.finish();
-    }
 
-    public void tanimla() {
-        davetgonder = findViewById(R.id.davetgonder);
+    public void tanimla(){
+        panoadibtn= findViewById(R.id.panoadibtn);
+        panoadi=findViewById(R.id.panoadi);
+
     }
-    public void tiklama() {
-        davetgonder.setOnClickListener(new View.OnClickListener() {
+    public void gecisYap(){
+        Intent intent=new Intent(this,PanoOlustur.class);
+        startActivity(intent);
+    }
+    public void tiklama(){
+        panoadibtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PanoIcerik.this,Davet.class));
+                //gecisYap();
+               new Post().execute();
             }
         });
     }
-    String url = Config.URL+"gideroku";
+    String url = Config.URL+"panoekle";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
 
-    class Post extends AsyncTask<String, String, String> {
+    class Post extends AsyncTask<Void, Void, Void> {
 
         protected void onPreExecute() { // Post tan önce yapılacak işlemler. Yükleniyor yazısını(ProgressDialog) gösterdik.
-            pDialog = new ProgressDialog(PanoIcerik.this);
+            pDialog = new ProgressDialog(pano_adi_olustur.this);
             pDialog.setMessage("Yükleniyor...");
             pDialog.setIndeterminate(true);
             pDialog.setCancelable(false); // ProgressDialog u iptal edilemez hale getirdik.
             pDialog.show();
+
+
         }
 
-        protected String doInBackground(String... unused) { // Arka Planda yapılacaklar. Yani Post işlemi
+        protected Void doInBackground(Void... unused) { // Arka Planda yapılacaklar. Yani Post işlemi
 
             List params = new ArrayList(); //Post edilecek değişkenleri ayarliyoruz.
-            final Class<? extends List> paramsClass = params.getClass();
-            params.add(new BasicNameValuePair("",""));
-            veri_string = post.httpPost(url,"GET",params,20000);
-            //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
-            veri_string = "{data:"+veri_string+"}";
-            Log.d("frgd:",""+veri_string);// gelen veriyi log tuttuk
-            TextView gidertext=findViewById(R.id.gidertext);
-            TextView gidertutar=findViewById(R.id.tutartext);
-            gidertutar.setText("Tutar");
+            //Bu değişkenler bu uygulamada hiçbir işe yaramıyor.Sadece göstermek amaçlı
+            // params.add(new BasicNameValuePair("panoID", "3"));
+            //params.add(new BasicNameValuePair("kullaniciID", "3"));
+            params.add(new BasicNameValuePair("panoadi",panoadi.getText().toString()));
+            params.add(new BasicNameValuePair("panoadmin",String.valueOf(GirisYap.sharedPref.getInt("kullanici_id",0))));
+
+
+            veri_string = post.httpPost(url,"POST",params,50000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
+
+            Log.d("HTTP POST CEVAP:",""+veri_string);// gelen veriyi log tuttuk
+
+            return null;
+        }
+
+        protected void onPostExecute(Void unused) { //Posttan sonra
+            pDialog.dismiss();  //ProgresDialog u kapatıyoruz.
+            String in;
+            in = veri_string;
             try {
-                JSONObject jo = new JSONObject(veri_string);
-                JSONArray arr = (JSONArray) jo.get("data");
-                for (int i = 0; i <arr.length() ; i++) {
-                    JSONObject j = arr.getJSONObject(i);
-                    gidertext.setText(gidertext.getText()+"\n"+j.get("gideradi"));
-                    gidertutar.setText(gidertutar.getText()+"\n"+j.get("gidertutar")+"₺");
-                }
+                JSONObject jsonObje = new JSONObject(veri_string);
+                String id  = jsonObje.getString("panoId");
+                GirisYap.sharedPref.edit().putInt("panoID",Integer.parseInt(id)).commit();
+                System.out.println("Pano Oluşturuldu "+id);
+                gecisYap();
+
             } catch (JSONException e) {
+                System.out.println("Giriş Hatası "+e.getMessage());
+                Toast.makeText(getApplicationContext(), "Kullanıcı bulunamadı", Toast.LENGTH_LONG).show();
+
                 e.printStackTrace();
             }
 
-
-            return veri_string;
-        }
-
-        protected void onPostExecute(String unused) { //Posttan sonra
-            pDialog.dismiss();  //ProgresDialog u kapatıyoruz.
-
         }
     }
+
 }

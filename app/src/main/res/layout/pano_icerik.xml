@@ -79,6 +79,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/gidertext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10px"
@@ -87,6 +88,7 @@
                         android:textSize="25dp" />
 
                     <TextView
+                        android:id="@+id/tutartext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="120dp"
