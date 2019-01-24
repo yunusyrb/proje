@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class PanoIcerik extends AppCompatActivity  {
 
-    Button davetgonder;
+    Button davetgonder,yenigider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +87,20 @@ public class PanoIcerik extends AppCompatActivity  {
 
     public void tanimla() {
         davetgonder = findViewById(R.id.davetgonder);
+        yenigider = findViewById(R.id.yenigider);
+
     }
     public void tiklama() {
         davetgonder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PanoIcerik.this,Davet.class));
+            }
+        });
+        yenigider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PanoIcerik.this,PanoOlustur.class));
             }
         });
     }
@@ -113,10 +122,16 @@ public class PanoIcerik extends AppCompatActivity  {
         protected String doInBackground(String... unused) { // Arka Planda yapılacaklar. Yani Post işlemi
 
             List params = new ArrayList(); //Post edilecek değişkenleri ayarliyoruz.
-            final Class<? extends List> paramsClass = params.getClass();
-            params.add(new BasicNameValuePair("",""));
-            veri_string = post.httpPost(url,"GET",params,20000);
+            params.add(new BasicNameValuePair("panoId",String.valueOf(GirisYap.sharedPref.getInt("panoID",0))));
+            veri_string = post.httpPost(url,"POST",params,20000);
             //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
+
+
+            return null;
+        }
+
+        protected void onPostExecute(String unused) { //Posttan sonra
+            pDialog.dismiss();  //ProgresDialog u kapatıyoruz.
             veri_string = "{data:"+veri_string+"}";
             Log.d("frgd:",""+veri_string);// gelen veriyi log tuttuk
             TextView gidertext=findViewById(R.id.gidertext);
@@ -125,21 +140,24 @@ public class PanoIcerik extends AppCompatActivity  {
             try {
                 JSONObject jo = new JSONObject(veri_string);
                 JSONArray arr = (JSONArray) jo.get("data");
-                for (int i = 0; i <arr.length() ; i++) {
-                    JSONObject j = arr.getJSONObject(i);
-                    gidertext.setText(gidertext.getText()+"\n"+j.get("gideradi"));
-                    gidertutar.setText(gidertutar.getText()+"\n"+j.get("gidertutar")+"₺");
+                TextView tutarTxt = findViewById(R.id.toplamtutar);
+                int tutar = 0;
+                if (arr.length()>0)
+                {
+                    for (int i = 0; i <arr.length() ; i++) {
+                        JSONObject j = arr.getJSONObject(i);
+                        gidertext.setText(gidertext.getText()+"\n"+j.get("gideradi"));
+                        gidertutar.setText(gidertutar.getText()+"\n"+j.get("gidertutar")+"₺");
+                        tutar +=Integer.parseInt(j.get("gidertutar").toString());
+                    }
+
+
                 }
+                tutarTxt.setText(String.valueOf(tutar));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-            return veri_string;
-        }
-
-        protected void onPostExecute(String unused) { //Posttan sonra
-            pDialog.dismiss();  //ProgresDialog u kapatıyoruz.
 
         }
     }

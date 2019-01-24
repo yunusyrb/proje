@@ -177,7 +177,7 @@ public class GirisYap extends AppCompatActivity {
                     editor.putBoolean("isSession",true);
                     editor.putInt("kullanici_id",realId);
                     editor.putString("ad",adsoyad);
-                     editor.putInt("panoId",panoId);
+                     editor.putInt("panoID",panoId);
                     editor.commit();
                     gecisYap();
                 }

@@ -29,9 +29,16 @@ public class pano_adi_olustur extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pano_adi_olustur);
-        tanimla();
-        tiklama();
+       if (GirisYap.sharedPref.getInt("panoID",0)>0)
+       {
+            gecisYap();
+       }
+       else
+       {
+           setContentView(R.layout.activity_pano_adi_olustur);
+           tanimla();
+           tiklama();
+       }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -73,7 +80,7 @@ public class pano_adi_olustur extends AppCompatActivity {
 
     }
     public void gecisYap(){
-        Intent intent=new Intent(this,PanoOlustur.class);
+        Intent intent=new Intent(this,PanoIcerik.class);
         startActivity(intent);
     }
     public void tiklama(){
@@ -110,6 +117,7 @@ public class pano_adi_olustur extends AppCompatActivity {
             //params.add(new BasicNameValuePair("kullaniciID", "3"));
             params.add(new BasicNameValuePair("panoadi",panoadi.getText().toString()));
             params.add(new BasicNameValuePair("panoadmin",String.valueOf(GirisYap.sharedPref.getInt("kullanici_id",0))));
+
 
 
             veri_string = post.httpPost(url,"POST",params,50000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
