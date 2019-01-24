@@ -17,22 +17,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.dell.proje.KayitOl" />
-        <activity android:name="com.example.dell.proje.GirisYap">
+        <activity android:name=".KayitOl" />
+        <activity android:name=".GirisYap">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.example.dell.proje.PanoOlustur"  />
-        <activity
-            android:name="com.example.dell.proje.PanoIcerik" />
-        <activity android:name="com.example.dell.proje.Hakkinda" />
-        <activity android:name="com.example.dell.proje.Ayarlar" />
-
-        <activity android:name="com.example.dell.proje.Davet" />
+        <activity android:name=".PanoOlustur" />
+        <activity android:name=".PanoIcerik" />
+        <activity android:name=".Hakkinda" />
+        <activity android:name=".Ayarlar" />
+        <activity android:name=".Davet" />
+        <activity android:name=".pano_adi_olustur"></activity>
     </application>
 
 </manifest>
