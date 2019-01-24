@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Davet  extends AppCompatActivity {
 
-    String url = "http://192.168.1.5/wbservis/service/davetet";
+    String url = Config.URL+"davetet";
     String veri_string;
     PostClass post = new PostClass();
     ProgressDialog pDialog;
