@@ -40,8 +40,8 @@ public class GirisYap extends AppCompatActivity {
 
         if (sessionControl){
 
-            mail = sharedPref.getString("email","batman");
-            Sifre= sharedPref.getString("sifre","batman");
+            mail = sharedPref.getString("email","");
+            Sifre= sharedPref.getString("sifre","");
             new Post().execute();
 
         }
@@ -81,8 +81,8 @@ public class GirisYap extends AppCompatActivity {
                 if(mail.matches("")){
                     hata_mesaji += "Üye No yada E-Mail Alanı Boş Olamaz\n";
                     hata = true;
-                }
-                /*if(!Fonksiyonlar.isEmailValid(mail)){//Mail format kontrol
+                }/*
+                if(!.isEmailValid(mail)){//Mail format kontrol
                     hata_mesaji += "Yanlış e-mail formatı\n";
                     hata=true;
                 }*/
@@ -177,8 +177,9 @@ public class GirisYap extends AppCompatActivity {
                     editor.putBoolean("isSession",true);
                     editor.putInt("kullanici_id",realId);
                     editor.putString("ad",adsoyad);
-                     editor.putInt("panoID",panoId);
+                    editor.putInt("panoID",panoId);
                     editor.commit();
+
                     gecisYap();
                 }
             } catch (JSONException e) {

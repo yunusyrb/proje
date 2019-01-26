@@ -47,6 +47,7 @@
 
         <EditText
             android:id="@+id/email"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="5"
@@ -75,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="150px"
+            android:layout_marginLeft="210px"
             android:layout_marginTop="10px"
             android:id="@+id/giris"
             android:hint="Gİriş Yap"/>
@@ -83,7 +84,7 @@
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="75dp"
             android:hint="Kayıt Ol"
             android:id="@+id/btnkayitol"
             />

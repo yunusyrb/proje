@@ -91,7 +91,7 @@ public class Ayarlar extends AppCompatActivity {
             params.add(new BasicNameValuePair("id", String.valueOf(kullanici_id)));
             params.add(new BasicNameValuePair("ad", strkullanici));
             params.add(new BasicNameValuePair("email", strmail));
-                params.add(new BasicNameValuePair("sifre", strsifre));
+            params.add(new BasicNameValuePair("sifre", strsifre));
 
 
             veri_string = post.httpPost(url,"POST",params,20000); //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
@@ -111,6 +111,7 @@ public class Ayarlar extends AppCompatActivity {
 
                 if(status){
                     SharedPreferences.Editor editor = GirisYap.sharedPref.edit();
+                    editor.putString("ad",ad.getText().toString());
                     editor.putString("email",strmail);
                     editor.putString("sifre",strsifre);
                     editor.commit();

@@ -167,12 +167,12 @@ public class PanoOlustur extends AppCompatActivity  {
                 postparams.add(new BasicNameValuePair("gideradi", gideradi));
                 postparams.add(new BasicNameValuePair("gidertutar", gidertutar));
                 postparams.add(new BasicNameValuePair("giderpano",String.valueOf( GirisYap.sharedPref.getInt("panoID",0))));
-                postparams.add(new BasicNameValuePair("gideradmin", "10"));
+                postparams.add(new BasicNameValuePair("gideradmin", String.valueOf( GirisYap.sharedPref.getInt("kullanici_id",0))));
                 postparams.add(new BasicNameValuePair("uniq", ""+a));
             }else{
                 postparams.clear();
                 postparams.add(new BasicNameValuePair("uniq", ""+uniq));
-                postparams.add(new BasicNameValuePair("userid", "10"));
+                postparams.add(new BasicNameValuePair("userid", String.valueOf( GirisYap.sharedPref.getInt("kullanici_id",0))));
             }
 
             //Bu değişkenler bu uygulamada hiçbir işe yaramıyor.Sadece göstermek amaçlı
@@ -227,7 +227,7 @@ public class PanoOlustur extends AppCompatActivity  {
                     btn.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             eklemeMi = false;
-                            url = "http://192.168.1.5/wbservis/service/gidersil";
+                            url = Config.URL+"gidersil";
                             uniq = index;
                             //ll.removeView(v);
                             ll.removeAllViews();

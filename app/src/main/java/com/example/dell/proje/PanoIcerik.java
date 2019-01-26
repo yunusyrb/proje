@@ -44,7 +44,7 @@ public class PanoIcerik extends AppCompatActivity  {
         setContentView(R.layout.pano_icerik);
         tanimla();
         tiklama();
-        new Post().execute();
+
     }
 
 
@@ -84,11 +84,13 @@ public class PanoIcerik extends AppCompatActivity  {
         startActivity(intent);
         PanoIcerik.this.finish();
     }
-
+    String panoID;
     public void tanimla() {
         davetgonder = findViewById(R.id.davetgonder);
         yenigider = findViewById(R.id.yenigider);
-
+        panoID = String.valueOf(GirisYap.sharedPref.getInt("panoID", 0));
+        Toast.makeText(getApplicationContext(), panoID, Toast.LENGTH_LONG).show();
+        new Post().execute();
     }
     public void tiklama() {
         davetgonder.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +111,7 @@ public class PanoIcerik extends AppCompatActivity  {
     PostClass post = new PostClass();
     ProgressDialog pDialog;
 
+
     class Post extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() { // Post tan önce yapılacak işlemler. Yükleniyor yazısını(ProgressDialog) gösterdik.
@@ -117,12 +120,15 @@ public class PanoIcerik extends AppCompatActivity  {
             pDialog.setIndeterminate(true);
             pDialog.setCancelable(false); // ProgressDialog u iptal edilemez hale getirdik.
             pDialog.show();
+
+
         }
 
         protected String doInBackground(String... unused) { // Arka Planda yapılacaklar. Yani Post işlemi
 
             List params = new ArrayList(); //Post edilecek değişkenleri ayarliyoruz.
-            params.add(new BasicNameValuePair("panoId",String.valueOf(GirisYap.sharedPref.getInt("panoID",0))));
+
+            params.add(new BasicNameValuePair("panoID", panoID));
             veri_string = post.httpPost(url,"POST",params,20000);
             //PostClass daki httpPost metodunu çağırdık.Gelen string değerini aldık
 
@@ -141,6 +147,7 @@ public class PanoIcerik extends AppCompatActivity  {
                 JSONObject jo = new JSONObject(veri_string);
                 JSONArray arr = (JSONArray) jo.get("data");
                 TextView tutarTxt = findViewById(R.id.toplamtutar);
+                TextView panoadi = findViewById(R.id.panoadi);
                 int tutar = 0;
                 if (arr.length()>0)
                 {
@@ -149,6 +156,7 @@ public class PanoIcerik extends AppCompatActivity  {
                         gidertext.setText(gidertext.getText()+"\n"+j.get("gideradi"));
                         gidertutar.setText(gidertutar.getText()+"\n"+j.get("gidertutar")+"₺");
                         tutar +=Integer.parseInt(j.get("gidertutar").toString());
+                        panoadi.setText(j.get("panoadi").toString());
                     }
 
 
